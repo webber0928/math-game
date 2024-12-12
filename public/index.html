@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Modern Chat Room</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: 'Arial', sans-serif;
+                background: #f4f4f9;
+                color: #333;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+
+            .container {
+                max-width: 400px;
+                width: 90%;
+                background: white;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+                color: #5a5af7;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            input {
+                width: 96%;
+                padding: 2%;
+                margin: 10px auto;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 16px;
+            }
+
+            button {
+                width: 100%;
+                background: #5a5af7;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 6px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+
+            button:hover {
+                background: #4949d4;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            li {
+                padding: 10px;
+                margin: 5px 0;
+                /* background: #f4f4f9; */
+                /* border: 1px solid #ddd; */
+                border-radius: 6px;
+                text-align: left;
+                display: block;
+            }
+
+            form {
+                margin-top: 10px;
+            }
+
+            .chat-header {
+                margin-bottom: 20px;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .chat-container {
+                max-height: 500px;
+                overflow-y: auto;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 6px;
+                background: #fafafa;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" id="username-container">
+            <h1>Welcome to Chat Room</h1>
+            <form id="username-form">
+                <input id="username" placeholder="Enter your name" autocomplete="off" />
+                <button>Set Username</button>
+            </form>
+        </div>
+
+        <div class="container hidden" id="room-container">
+            <h1>Select a Room</h1>
+            <form id="room-form">
+                <input id="room" placeholder="Enter room name" autocomplete="off" />
+                <button>Join Room</button>
+            </form>
+        </div>
+
+        <div class="container hidden" id="chat-container">
+            <div class="chat-header">
+                Chat Room
+                <div id="room-users" style="font-size: 14px; margin-top: 5px; color: #666;">
+                    <!-- 顯示房間內的成員 -->
+                </div>
+            </div>
+            <div class="chat-container" id="messages"></div>
+            <form id="form">
+                <input id="input" autocomplete="off" placeholder="Type a message..." />
+                <button>Send</button>
+            </form>
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io();
+
+            // Elements
+            const usernameContainer = document.getElementById('username-container');
+            const roomContainer = document.getElementById('room-container');
+            const chatContainer = document.getElementById('chat-container');
+            const messages = document.getElementById('messages');
+
+            // Set username
+            document.getElementById('username-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                if (username) {
+                    socket.emit('set username', username);
+                }
+            });
+
+            socket.on('username set', () => {
+                usernameContainer.classList.add('hidden');
+                roomContainer.classList.remove('hidden');
+            });
+
+            // Join room
+            document.getElementById('room-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const room = document.getElementById('room').value;
+                if (room) {
+                    socket.emit('join room', room);
+                    roomContainer.classList.add('hidden');
+                    chatContainer.classList.remove('hidden');
+                }
+            });
+
+            // Send messages
+            document.getElementById('form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = document.getElementById('input');
+                if (input.value) {
+                    socket.emit('chat message', input.value);
+                    input.value = '';
+                }
+            });
+
+            // Display history
+            socket.on('history', (messagesHistory) => {
+                messages.innerHTML = '';
+                messagesHistory.forEach((msg) => {
+                    const li = document.createElement('li');
+                    li.textContent = msg;
+                    messages.appendChild(li);
+                });
+            });
+
+            // Display new messages
+            socket.on('chat message', (msg) => {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                messages.appendChild(li);
+            });
+
+            // Error handling
+            socket.on('error', (errMsg) => {
+                alert(errMsg);
+            });
+
+            socket.on('room users', (users) => {
+                const roomUsers = document.getElementById('room-users');
+                console.log('L202', users)
+                roomUsers.textContent = `Users in this room: ${users.join(', ')}`;
+            });
+        </script>
+    </body>
+</html>
