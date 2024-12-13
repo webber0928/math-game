@@ -1,0 +1,184 @@
+/* 通用樣式 */
+body {
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #1e1e2f;
+    color: #f4f4f4;
+    text-shadow: 1px 1px 0 #000;
+}
+
+button {
+    font-size: 14px;
+    padding: 10px 20px;
+    margin: 10px;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    background: linear-gradient(180deg, #ffcc00, #ff9900);
+    color: #1e1e2f;
+    text-shadow: 1px 1px 0 #000;
+    transition: transform 0.2s, background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    background: linear-gradient(180deg, #ffe066, #ffb84d);
+    color: #000;
+}
+
+button:active {
+    transform: scale(0.9);
+    background: linear-gradient(180deg, #d49b00, #b37500);
+    color: #1e1e2f;
+}
+
+.difficulty {
+    margin-bottom: 20px;
+}
+
+/* 題目和分數顯示樣式 */
+.question {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 20px;
+    text-align: center;
+    padding: 10px;
+    background: #27273d;
+    border: 3px solid #3f3f5a;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px #000, 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+#error-text {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #ff3b3b;
+    transition: color 0.5s;
+}
+
+#score-text {
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+}
+
+/* 時間進度條樣式 */
+#time-bar {
+    width: 100%;
+    height: 20px;
+    background: #3f3f5a;
+    border: 3px solid #27273d;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px #000, 0 4px 8px rgba(0, 0, 0, 0.6);
+    margin-bottom: 20px;
+}
+
+#time-bar-inner {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ff5722, #ffcc00);
+    transition: width 0.5s linear;
+}
+
+/* 數字方塊樣式 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 400px;
+    background: #12122b;
+    padding: 10px;
+    border: 4px solid #3f3f5a;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
+}
+
+.box {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background: #e3e3e3;
+    color: #1e1e2f;
+    border: 2px solid #5a5a84;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.box:hover {
+    transform: scale(1.1);
+    background: #ffcc00;
+    color: #fff;
+    border-color: #ff9900;
+}
+
+.box.selected {
+    background: #ff5722;
+    color: #fff;
+    border-color: #d94100;
+    box-shadow: inset 0 0 5px #000, 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.box.disappear {
+    animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+#ranking-container {
+    background: #42425e;
+    border: 4px solid #5c5c84;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+#ranking-list li {
+    background: #5a5a84;
+    color: #fff;
+    font-weight: bold;
+    border: 3px solid #3c3c5c;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+}
+
+#player-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#join-screen {
+    text-align: center;
+    font-size: 25px;
+}
+#join-screen input{
+    margin-top: 7px;
+    font-size: 30px;
+    padding: 7px;
+}
+#join-screen button{
+    margin-top: 15px;
+    font-size: 20px;
+}

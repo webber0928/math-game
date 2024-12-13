@@ -3,45 +3,21 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>加入數學遊戲</title>
-        <script src="/socket.io/socket.io.js"></script>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <title>數學遊戲</title>
+        <link rel="stylesheet" type="text/css" href="../style.css" />
     </head>
     <body>
-        <h1>SUM Game</h1>
-        <div id="join-screen">
-            <label for="name">輸入你的名稱：</label>
-            <input type="text" id="name" placeholder="名稱" />
-            <button onclick="joinGame()">加入遊戲</button>
+        <div class="difficulty">
+            <button onclick="setDifficulty('easy')">初級</button>
+            <button onclick="setDifficulty('medium')">中級</button>
+            <button onclick="setDifficulty('hard')">高級</button>
         </div>
-        <div id="waiting-screen" style="display: none">
-            <div id="game-container">
-                <div class="question" id="question">等待開始...</div>
-                <div id="error-text" style="text-align: center"></div>
-                <div class="grid" id="grid" style="display: none;"></div>
-                <div id="score-text" style="text-align: center; margin-top: 10px"></div>
-            </div>
-            <div id="ranking-container" style="display: none">
-                <h2>遊戲結束！玩家排名：</h2>
-                <ul id="ranking-list"></ul>
-                <button onclick="restartGame()">重新開始</button>
-            </div>
-        </div>
+        <div class="question" id="question">請選擇難度</div>
+        <div id="error-text" style="text-align: center"></div>
+        <div class="grid" id="grid" style="display: none;"></div>
+        <div id="score-text" style="text-align: center; margin-top: 10px;"></div>
 
         <script>
-            function joinGame() {
-                const name = document.getElementById('name').value.trim();
-                if (name) {
-                    socket.emit('join_game', name);
-                    document.getElementById('join-screen').style.display = 'none';
-                    document.getElementById('waiting-screen').style.display = 'block';
-                } else {
-                    alert('請輸入有效的名稱！');
-                }
-            }
-
-            // 接收遊戲開始通知，進入遊戲頁面
-            const socket = io();
             const gridElement = document.getElementById('grid');
             const questionElement = document.getElementById('question');
             const errorTextElement = document.getElementById('error-text');
@@ -54,57 +30,11 @@
             let operation = ''; // 運算符號
             let difficulty = ''; // 當前難度
             let maxNumber = 9; // 數字範圍上限
-            let operations = ['+', '-', 'x']; // 可用運算符號
+            let operations = ['+']; // 可用運算符號
             let questionCount = 0; // 已完成題數
             const maxQuestions = 7; // 題目總數
             let timer; // 計時器
             let score = 0; // 總分
-
-            // 初始化遊戲
-            function initGame() {
-                score = 0;
-                updateScoreDisplay();
-                // 保留您的遊戲邏輯
-            }
-
-            // 更新分數顯示
-            function updateScoreDisplay() {
-                document.getElementById('score-text').textContent = `分數：${score}`;
-            }
-
-            // 遊戲結束，發送分數到伺服器
-            function endGame() {
-                socket.emit('update_score', score);
-                socket.emit('end_game'); // 通知伺服器遊戲結束
-            }
-
-            // 接收排名結果
-            socket.on('game_ended', (rankings) => {
-                console.log('L63', rankings);
-                socket.emit('update_score', score);
-                document.getElementById('game-container').style.display = 'none';
-                const rankingContainer = document.getElementById('ranking-container');
-                rankingContainer.style.display = 'block';
-                const rankingList = document.getElementById('ranking-list');
-                rankingList.innerHTML = '';
-
-                rankings.forEach((player, index) => {
-                    const li = document.createElement('li');
-                    li.textContent = `${index + 1}. ${player.name} - 分數: ${player.score}`;
-                    rankingList.appendChild(li);
-                });
-            });
-
-            // 重新開始遊戲
-            function restartGame() {
-                location.reload();
-            }
-
-            // 啟動遊戲
-            socket.on('start_game', () => {
-                // alert('遊戲開始！');
-                initGame();
-            });
 
             /**
              * 設定難度
@@ -157,7 +87,6 @@
                     errorTextElement.textContent = `最終分數：${score}`;
                     gridElement.innerHTML = '';
                     gridElement.style.display = 'none';
-                    endGame();
                     return;
                 }
 
